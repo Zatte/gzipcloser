@@ -84,7 +84,7 @@ func TestReaderClose(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, b.closeErr, r.Close(), "When closing a stream the underlying error should be reported <nil>")
 
-	// Simluated error case
+	// Simulated error case
 	b = getTestReader()
 	b.closeErr = fmt.Errorf("some-err")
 	r, err = gzipcloser.NewReader(b)

@@ -1,5 +1,5 @@
 # GzipCloser
-Gzip Closer is a wrapper around golang [gzip package](https://golang.org/pkg/compress/gzip/) where the underlying gzip stream is also closed on Close(). Useful if when you don't want to keep track of 2 readers/writers.
+Gzip Closer is a wrapper around golang [gzip package](https://golang.org/pkg/compress/gzip/) where the underlying gzip stream is also closed on Close(). Useful if/when you don't want to keep track of 2 readers/writers.
 
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/zatte/gzipcloser?style=flat-square)](https://goreportcard.com/report/github.com/zatte/gzipcloser)
