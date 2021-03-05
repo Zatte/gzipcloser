@@ -5,13 +5,12 @@ import (
 	"io"
 )
 
-// BaseReader is an alias for io.Reader
-type BaseReader = io.Reader
+var _ io.Reader = (*Reader)(nil)
 
 // Reader is a Gzip reader that once closed will also close the underlying reader (which the standard gz reader does not)
 type Reader struct {
 	*gzip.Reader
-	BaseReader
+	base io.Reader
 }
 
 // NewReader treats the r-stream as a gzip stream and returns a Reader
@@ -28,7 +27,7 @@ func (gz *Reader) Close() error {
 	if err := gz.Reader.Close(); err != nil {
 		return err
 	}
-	if r, ok := gz.BaseReader.(closer); ok {
+	if r, ok := gz.base.(closer); ok {
 		return r.Close()
 	}
 	return nil

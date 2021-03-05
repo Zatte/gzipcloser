@@ -5,13 +5,12 @@ import (
 	"io"
 )
 
-// BaseWriter is an alias for io.Writer
-type BaseWriter = io.Writer
+var _ io.Writer = (*Writer)(nil)
 
 // Writer creates a gzip file which closes the underlying stream as well as the gzip stream on close
 type Writer struct {
 	*gzip.Writer
-	BaseWriter
+	base io.Writer
 }
 
 // NewWriter acts like a compress/gzip.NewWriter but any Close And Flushes calls will be cascaded to underlying writer.
@@ -19,8 +18,8 @@ type Writer struct {
 // if w does not implement Flush() or Close(); Flush()/Close() will only be applied to the gzip stream
 func NewWriter(w io.Writer) *Writer {
 	return &Writer{
-		Writer:     gzip.NewWriter(w),
-		BaseWriter: w,
+		Writer: gzip.NewWriter(w),
+		base:   w,
 	}
 }
 
@@ -34,7 +33,7 @@ func (gz *Writer) Flush() error {
 	if err := gz.Writer.Flush(); err != nil {
 		return err
 	}
-	if flusher, ok := gz.BaseWriter.(flusher); ok {
+	if flusher, ok := gz.base.(flusher); ok {
 		return flusher.Flush()
 	}
 	return nil
@@ -50,10 +49,9 @@ func (gz *Writer) Close() error {
 		return err
 	}
 
-	if closer, ok := gz.BaseWriter.(closer); ok {
+	if closer, ok := gz.base.(closer); ok {
 		return closer.Close()
 	}
-	panic("not a closer")
 
 	return nil
 }
